@@ -62,7 +62,7 @@ class UserService {
     }
   }
 
-  static async changePassword(userId,data) {
+  static async changePassword(userId, data) {
     const { password, confirm_password } = data;
     if (password && confirm_password) {
       if (password !== confirm_password) {
@@ -75,7 +75,7 @@ class UserService {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         await UserModel.updateOne(
-          { _id:userId },
+          { _id: userId },
           {
             password: hashedPassword,
           }
@@ -86,6 +86,22 @@ class UserService {
       }
     } else {
       return { status: 400, message: "All fields are required" };
+    }
+  }
+
+  static async userProfile(userId) {
+    try {
+      const user = await UserModel.findById(userId).select("-password");
+      return {
+        status: 200,
+        message: "User details fetched successfully",
+        data: user,
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: "Failed to get the user profile",
+      };
     }
   }
 }

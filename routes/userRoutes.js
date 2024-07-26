@@ -13,5 +13,6 @@ router.post(
   authenticateUser,
   UserController.userChangePassword
 );
+router.get("/profile", authenticateUser, UserController.userProfile);
 
 export default router;
