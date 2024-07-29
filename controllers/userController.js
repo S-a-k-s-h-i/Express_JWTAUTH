@@ -49,6 +49,32 @@ class UserController {
       });
     }
   };
+
+  static userPasswordResetEmail = async (req, res) => {
+    const { email } = req.body;
+    const result = await UserService.sendUserPasswordResetEmail(email);
+    res.status(result.status).send({
+      status: result.status === 200 ? "success" : "failed",
+      message: result.message,
+    });
+  };
+
+  static userPasswordReset = async (req, res) => {
+    console.log(req.body,req.params);
+    const { password, confirm_password } = req.body;
+    const { id, token } = req.params;
+    const result = await UserService.userPasswordReset(
+      {
+        password,
+        confirm_password,
+      },
+      { id, token }
+    );
+    res.status(result.status).send({
+      status: result.status === 200 ? "success" : "failed",
+      message: result.message,
+    });
+  };
 }
 
 export default UserController;
