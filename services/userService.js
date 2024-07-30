@@ -1,7 +1,7 @@
 import UserModel from "../models/users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import transporter from '../configs/emailConfig.js';
+import emailQueue from '../queues/emailQueue.js';
 class UserService {
   static async registerUser(data) {
     const { name, email, password, confirm_password, tc } = data;
@@ -116,13 +116,8 @@ class UserService {
           });
           // /api/user/reset/:id/:token
           const link = `http://127.0.0.1:3000/api/user/reset-password/${user._id}/${token}`;
-          //send email
-          const info = await transporter.sendMail({
-            from: process.env.EMAIL_FROM,
-            to:user.email,
-            subject:'DEV - Password Reset Email',
-            html:`<p><a href=${link}>Click here </a>to reset password</p>`
-          })
+          //Add email job to the queue
+          emailQueue.add({email:user.email,link})
           return { status: 200, message: "Password reset email sent successfully" };
         } else {
           return { status: 400, message: "Email does't exist" };
