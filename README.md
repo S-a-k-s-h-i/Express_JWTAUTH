@@ -1,6 +1,8 @@
 # ExpressAuth: Authentication System
 
 This service primarily focuses on authentication and authorization. It features private and protected routes that are accessible only to authenticated users using JWT for authentication. Routes include registration, login, user profile management, password change, and password reset.
+Password reset emails are handled asynchronously using queue system,
+emails are processed in the background to ensure efficient and reliable delivery.
 
 - Provides the user with the flexibility to reset the password if forgotten-
   - User will receive a link to reset the password in email.
